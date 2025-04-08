@@ -2,41 +2,43 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Sample GWP database
-gwp_data = { # ecoinvent 3.11
-    'Concrete 35MPa (RoW)': {'unit': 'm3', 'gwp': 358},  # GWP per m3
-    'Steel (RER)': {'unit': 'kg', 'gwp': 4.62},
-    'Truck Transport (EURO 3) (GLO)': {'unit': 'tkm', 'gwp': 0.405},
-    'Flattened bamboo (RoW)': {'unit': 'kg', 'gwp': 0.469},
-    'Aluminum alloy (GLO)': {'unit': 'kg', 'gwp': 6.35}
+# --- Sample GWP data ---
+gwp_data = {
+    'Concrete': {'unit': 'm3', 'gwp': 300},  # GWP per m3
+    'Steel': {'unit': 'kg', 'gwp': 2.5},     # GWP per kg
+    'Truck Transport': {'unit': 'tkm', 'gwp': 0.1},  # GWP per tonne-km
+    'Wood': {'unit': 'm3', 'gwp': 100},
+    'Aluminum': {'unit': 'kg', 'gwp': 10},
 }
 
-# Density data for volume to mass conversion (kg/m3)
+# --- Density data for volume to mass conversion ---
 density_data = {
-    'Concrete 35MPa (RoW)': 2400,
-    'Flattened bamboo (RoW)': 600,
+    'Concrete': 2400,  # kg/m3
+    'Wood': 600,
 }
 
-# Store session state for current design
+# --- Initialize session state ---
 if 'current_design' not in st.session_state:
     st.session_state.current_design = {}
 
-st.title("Design GWP Dashboard")
+if 'alternatives' not in st.session_state:
+    st.session_state.alternatives = {}
 
-# --- Select Input ---
-st.header("Add Inputs")
+st.title("🌍 Screening Tool for GWP in Eco-Design")
 
-item = st.selectbox("Select Material/Transport", list(gwp_data.keys()))
+# --- Add to Current Design ---
+st.header("➕ Add to Current Design")
+
+item = st.selectbox("Select Material or Transport", list(gwp_data.keys()))
 quantity = st.number_input("Enter Quantity", min_value=0.0, step=0.1)
 
-if st.button("Add to Design"):
+if st.button("Add to Current Design"):
     if item in st.session_state.current_design:
         st.session_state.current_design[item] += quantity
     else:
         st.session_state.current_design[item] = quantity
 
-# --- Show Current Design ---
-st.subheader("Current Design Inputs")
+st.subheader("📦 Current Design Inputs")
 st.write(st.session_state.current_design)
 
 # --- GWP Calculation Function ---
@@ -50,45 +52,58 @@ def calculate_gwp(design):
         elif gwp_unit == 'm3':
             if item in density_data:
                 effective_qty = qty * density_data[item]  # Convert m3 to kg
-                gwp_per_unit /= density_data[item]  # Adjust GWP to per m3 again
+                gwp_per_unit /= density_data[item]  # Adjust GWP accordingly
             else:
                 effective_qty = qty
         else:
-            effective_qty = qty  # default
+            effective_qty = qty
         total_gwp += effective_qty * gwp_per_unit
     return total_gwp
 
-# --- Current GWP ---
+# --- Calculate current GWP ---
 current_gwp = calculate_gwp(st.session_state.current_design)
-st.success(f"Current Design GWP: {current_gwp:.2f} kg CO₂e")
+st.success(f"🌱 Current Design GWP: {current_gwp:.2f} kg CO₂e")
 
-# --- Alternative Design ---
-st.header("Test Alternative Design")
-alternative_design = {}
+# --- Alternative Design Section ---
+st.header("🧪 Create Alternative Designs")
+
+alt_name = st.text_input("Alternative Design Name")
+alt_input = {}
 
 for item in gwp_data.keys():
-    alt_qty = st.number_input(f"Alt Quantity for {item}", min_value=0.0, step=0.1)
-    if alt_qty > 0:
-        alternative_design[item] = alt_qty
+    qty = st.number_input(f"{alt_name or 'Alternative'} - Quantity for {item}", min_value=0.0, step=0.1, key=f"{alt_name}_{item}")
+    if qty > 0:
+        alt_input[item] = qty
 
-alt_gwp = calculate_gwp(alternative_design)
-st.info(f"Alternative Design GWP: {alt_gwp:.2f} kg CO₂e")
+if st.button("💾 Save Alternative"):
+    if alt_name:
+        st.session_state.alternatives[alt_name] = alt_input.copy()
+        st.success(f"Saved alternative design: {alt_name}")
+    else:
+        st.warning("Please enter a name for the alternative design.")
 
 # --- Visualization ---
-st.subheader("📊 GWP Comparison")
+st.header("📊 GWP Comparison Chart")
 
-comparison_df = pd.DataFrame({
-    'Design': ['Current', 'Alternative'],
-    'GWP (kg CO₂e)': [current_gwp, alt_gwp]
-})
+design_names = ['Current'] + list(st.session_state.alternatives.keys())
+gwp_values = [current_gwp] + [calculate_gwp(alt) for alt in st.session_state.alternatives.values()]
+colors = ['tab:blue'] + ['tab:orange'] * len(st.session_state.alternatives)
 
-st.bar_chart(comparison_df.set_index('Design'))
+comparison_df = pd.DataFrame({'Design': design_names, 'GWP (kg CO₂e)': gwp_values})
 
+fig, ax = plt.subplots()
+bars = ax.bar(comparison_df['Design'], comparison_df['GWP (kg CO₂e)'], color=colors)
+ax.set_ylabel('GWP (kg CO₂e)')
+ax.set_title('Global Warming Potential by Design')
+ax.set_xticks(range(len(comparison_df)))
+ax.set_xticklabels(comparison_df['Design'], rotation=0)
 
-# --- Comparison ---
-if alt_gwp < current_gwp:
-    st.success("✅ Alternative design is better for GWP!")
-elif alt_gwp == current_gwp:
-    st.warning("⚖️ Same GWP as current design.")
-else:
-    st.error("❌ Alternative design has higher GWP.")
+for bar in bars:
+    height = bar.get_height()
+    ax.annotate(f'{height:.1f}',
+                xy=(bar.get_x() + bar.get_width() / 2, height),
+                xytext=(0, 3),
+                textcoords="offset points",
+                ha='center', va='bottom')
+
+st.pyplot(fig)
