@@ -134,6 +134,6 @@ st.pyplot(fig)
 st.markdown("---")
 st.header("📚 Sources")
 st.markdown("""
-- **ICE Advanced Database 2024**  
+- **ICE Advanced Database 2024 Version 4**  
 - **IPCC 2021**
 """)
