@@ -9,13 +9,15 @@ gwp_data = {
     'Truck Transport > 32 tonnes (RoW) (t-km)': {'unit': 'tkm', 'gwp': 0.112},  # GWP per tonne-km
     'Wood (RoW) (kg)': {'unit': 'm3', 'gwp': 0.469},
     'Aluminum alloy (RoW) (kg)': {'unit': 'kg', 'gwp': 8.22},
-    "Copper (GLO) (kg)":{"unit":"kg","gwp":3.72}
+    "Copper (GLO) (kg)":{"unit":"kg","gwp":3.72},
+    "Cable (kg) (GLO)":{"unit":"kg","gwp":6.08},
+    "Network cable (m) (GLO)":{"unit":"m","gwp":0.546}
 }
-
 # --- Density data for volume to mass conversion ---
 density_data = {
-    'Concrete 35MPa (m3) (RoW)': 2400,  # kg/m3
-    'Wood (RoW) (kg)': 350, #https://www.engineeringtoolbox.com/wood-density-d_40.html
+    'Concrete 35MPa (m3) (RoW)': 2400,
+    'Wood (RoW) (kg)': 350,
+    "Network cable (m) (GLO)": 0.036
 }
 
 # --- Initialize session state ---
@@ -40,7 +42,16 @@ if st.button("Add to Current Design"):
         st.session_state.current_design[item] = quantity
 
 st.subheader("📦 Current Design Inputs")
-st.write(st.session_state.current_design)
+
+# --- Display current design as a table ---
+if st.session_state.current_design:
+    current_design_df = pd.DataFrame([
+        {'Material/Transport': k, 'Quantity': v, 'Unit': gwp_data[k]['unit']}
+        for k, v in st.session_state.current_design.items()
+    ])
+    st.table(current_design_df)
+else:
+    st.info("No items added yet.")
 
 # --- GWP Calculation Function ---
 def calculate_gwp(design):
@@ -52,8 +63,8 @@ def calculate_gwp(design):
             effective_qty = qty
         elif gwp_unit == 'm3':
             if item in density_data:
-                effective_qty = qty * density_data[item]  # Convert m3 to kg
-                gwp_per_unit /= density_data[item]  # Adjust GWP accordingly
+                effective_qty = qty * density_data[item]
+                gwp_per_unit /= density_data[item]
             else:
                 effective_qty = qty
         else:
