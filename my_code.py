@@ -4,21 +4,20 @@ import matplotlib.pyplot as plt
 
 # --- Sample GWP data ---
 gwp_data = {
-    'Concrete 35MPa (RoW) (m3)': {'unit': 'm3', 'gwp': 358},  # GWP per m3
-    'Stainless steel (GLO) (kg)': {'unit': 'kg', 'gwp': 4.95},     # GWP per kg
+    'Concrete 35MPa (kg)': {'unit': 'kg', 'gwp': 0.122},  # ICE database 2024
+    'Stainless steel (GLO) (kg)': {'unit': 'kg', 'gwp': 4.81},     # GWP per kg, ICE database 2024
     'Low-alloyed steel (GLO) (kg)': {'unit': 'kg', 'gwp': 2.04},  # GWP per kg
     'Unalloyed steel (GLO) (kg)': {'unit': 'kg', 'gwp': 1.86},  # GWP per kg
-    'Cast iron (GLO) (kg)': {'unit': 'kg', 'gwp': 1.83},  # GWP per kg
     'Iron-nickel-chromium alloy (GLO) (kg)': {'unit': 'kg', 'gwp': 7.04},  # GWP per kg
-    'Cast iron (GLO) (kg)': {'unit': 'kg', 'gwp': 1.83},  # GWP per kg
+    'Cast iron (GLO) (kg)': {'unit': 'kg', 'gwp': 2.03},  # GWP per kg, ICE database 2024
  #   'Truck Transport > 32 tonnes (RoW) (t-km)': {'unit': 'tkm', 'gwp': 0.112},  # GWP per tonne-km
-#    'Wood (RoW) (kg)': {'unit': 'm3', 'gwp': 0.469},
-    'Aluminum alloy (RoW) (kg)': {'unit': 'kg', 'gwp': 8.22},
-    "Copper (GLO) (kg)":{"unit":"kg","gwp":3.72},
+#    'Wood fibreboard (RoW) (kg)': {'unit': 'm3', 'gwp': 0.715}, ICE database 2024, excludes carbon storage
+    'Aluminum alloy (GLO) (kg)': {'unit': 'kg', 'gwp': 8.66}, # ICE database 2024
+    "Copper (GLO) (kg)":{"unit":"kg","gwp":3.81},# ICE database 2024
     "Cable (GLO) (kg) ":{"unit":"kg","gwp":6.08},
     "Network cable (GLO) (m)":{"unit":"m","gwp":0.546},
-    'Chromium steel pipe (GLO) (kg)': {'unit': 'kg', 'gwp': 5.45},  # GWP per kg
-    'Rubber seal (GLO) (kg)': {'unit': 'kg', 'gwp': 2.52},  # GWP per kg
+    'Steel pipe, welded (GLO) (kg)': {'unit': 'kg', 'gwp': 2.51},  # GWP per kg, ICE database 2024
+    'Rubber seal (GLO) (kg)': {'unit': 'kg', 'gwp': 2.55},  # GWP per kg, ICE database 2024
 }
 # --- Density data for volume to mass conversion ---
 density_data = {
@@ -130,3 +129,11 @@ for bar in bars:
                 ha='center', va='bottom')
 
 st.pyplot(fig)
+
+# --- Sources ---
+st.markdown("---")
+st.header("📚 Sources")
+st.markdown("""
+- **ICE Advanced Database 2024**  
+- **IPCC 2021**
+""")
