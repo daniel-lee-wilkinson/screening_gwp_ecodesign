@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # --- Sample GWP data ---
 gwp_data = {
-    'Concrete 35MPa (m3) (RoW)': {'unit': 'm3', 'gwp': 358},  # GWP per m3
+    'Concrete 35MPa (RoW) (m3)': {'unit': 'm3', 'gwp': 358},  # GWP per m3
     'Stainless steel (GLO) (kg)': {'unit': 'kg', 'gwp': 4.95},     # GWP per kg
     'Low-alloyed steel (GLO) (kg)': {'unit': 'kg', 'gwp': 2.04},  # GWP per kg
     'Unalloyed steel (GLO) (kg)': {'unit': 'kg', 'gwp': 1.86},  # GWP per kg
@@ -15,16 +15,16 @@ gwp_data = {
 #    'Wood (RoW) (kg)': {'unit': 'm3', 'gwp': 0.469},
     'Aluminum alloy (RoW) (kg)': {'unit': 'kg', 'gwp': 8.22},
     "Copper (GLO) (kg)":{"unit":"kg","gwp":3.72},
-    "Cable (kg) (GLO)":{"unit":"kg","gwp":6.08},
-    "Network cable (m) (GLO)":{"unit":"m","gwp":0.546},
+    "Cable (GLO) (kg) ":{"unit":"kg","gwp":6.08},
+    "Network cable (GLO) (m)":{"unit":"m","gwp":0.546},
     'Chromium steel pipe (GLO) (kg)': {'unit': 'kg', 'gwp': 5.45},  # GWP per kg
     'Rubber seal (GLO) (kg)': {'unit': 'kg', 'gwp': 2.52},  # GWP per kg
 }
 # --- Density data for volume to mass conversion ---
 density_data = {
-    'Concrete 35MPa (m3) (RoW)': 2400,
-    'Wood (RoW) (kg)': 350,
-    "Network cable (m) (GLO)": 0.036
+    'Concrete 35MPa (RoW) (m3) ': 2400,
+ #   'Wood (RoW) (kg)': 350,
+    "Network cable (GLO) (m)": 0.036
 }
 
 # --- Initialize session state ---
