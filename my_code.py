@@ -39,7 +39,9 @@ st.title("🌍 Screening Tool for GWP in Eco-Design")
 # --- Add to Current Design ---
 st.header("➕ Add to Current Design")
 
-item = st.selectbox("Select Material or Transport", list(gwp_data.keys()))
+material_list = sorted(gwp_data.keys())
+
+item = st.selectbox("Select Material or Transport", material_list)
 quantity = st.number_input("Enter Quantity", min_value=0.0, step=0.1)
 
 if st.button("Add to Current Design"):
