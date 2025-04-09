@@ -4,17 +4,18 @@ import matplotlib.pyplot as plt
 
 # --- Sample GWP data ---
 gwp_data = {
-    'Concrete': {'unit': 'm3', 'gwp': 300},  # GWP per m3
-    'Steel': {'unit': 'kg', 'gwp': 2.5},     # GWP per kg
-    'Truck Transport': {'unit': 'tkm', 'gwp': 0.1},  # GWP per tonne-km
-    'Wood': {'unit': 'm3', 'gwp': 100},
-    'Aluminum': {'unit': 'kg', 'gwp': 10},
+    'Concrete 35MPa (m3) (RoW)': {'unit': 'm3', 'gwp': 358},  # GWP per m3
+    'Stainless steel (GLO) (kg)': {'unit': 'kg', 'gwp': 4.95},     # GWP per kg
+    'Truck Transport > 32 tonnes (RoW) (t-km)': {'unit': 'tkm', 'gwp': 0.112},  # GWP per tonne-km
+    'Wood (RoW) (kg)': {'unit': 'm3', 'gwp': 0.469},
+    'Aluminum alloy (RoW) (kg)': {'unit': 'kg', 'gwp': 8.22},
+    "Copper (GLO) (kg)":{"unit":"kg","gwp":3.72}
 }
 
 # --- Density data for volume to mass conversion ---
 density_data = {
-    'Concrete': 2400,  # kg/m3
-    'Wood': 600,
+    'Concrete 35MPa (m3) (RoW)': 2400,  # kg/m3
+    'Wood (RoW) (kg)': 350, #https://www.engineeringtoolbox.com/wood-density-d_40.html
 }
 
 # --- Initialize session state ---
