@@ -90,7 +90,9 @@ alt_name = st.text_input("Alternative Design Name")
 alt_input = {}
 
 for item in gwp_data.keys():
-    qty = st.number_input(f"Quantity for {item} - {alt_name or 'Alternative'} ", min_value=0.0, step=0.1, key=f"{alt_name}_{item}")
+    qty = st.number_input(f"{item} - {alt_name or 'Alternative Scenario'}", min_value=0.0, step=0.1,
+                          key=f"{alt_name}_{item}")
+
     if qty > 0:
         alt_input[item] = qty
 
